@@ -256,8 +256,12 @@ $(document).ready(function() {
     $("#chat-log").empty();
     const log = $("<div>");
     console.log(snap.val());
-    for (let x = 0; x < Object.keys(snap.val()).length; x++) {
-      log.prepend(
+    for (
+      let x = Object.keys(snap.val()).length - 1;
+      x > Object.keys(snap.val()).length - 11;
+      x--
+    ) {
+      log.append(
         $("<div>").text(snap.val()[Object.keys(snap.val())[x]].message)
       );
       console.log(snap.val()[Object.keys(snap.val())[x]].message);
