@@ -12,9 +12,12 @@ $(document).ready(function() {
   //List of all connections
   const connectionsRef = database.ref("/connections");
   const connectedRef = database.ref(".info/connected");
+  let userList = {};
   let myClientTag = "";
   let players = [];
-  let myUserName = "";
+  let player1 = "";
+  let player2 = "";
+  let myUserName = "Guest";
   let playerNum = "";
   let myWins = 0;
   let myGamesPlayed = 0;
@@ -25,7 +28,7 @@ $(document).ready(function() {
       // Add user to the connections list.
       const con = connectionsRef.push(true);
       myClientTag = con.key;
-      console.log(myClientTag);
+      console.log("my client tag: ", myClientTag);
       // Remove user from the connection list when they disconnect.
       con.onDisconnect().remove();
     }
@@ -35,7 +38,9 @@ $(document).ready(function() {
     if (connectionArr.length <= 2) {
       players = connectionArr;
       if (myClientTag === players[0]) playerNum = "Player1";
-      if (myClientTag === players[1]) playerNum = "Player2";
+      else if (myClientTag === players[1]) playerNum = "Player2";
+      $("#username").text(playerNum);
+      console.log("my player num: ", playerNum);
       $("#game").empty().append(`<form id="selection">
         <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
         <label for="rock">Rock</label>
@@ -87,15 +92,32 @@ $(document).ready(function() {
       return "input error";
     }
   };
-  const newUser = name =>
+  $("#username").append(
+    $("<form>")
+      .attr("id", "login")
+      .append(
+        $("<input>")
+          .attr("type", "text")
+          .attr("id", "usernameInput"),
+        $("<input>").attr("type", "submit")
+      )
+  );
+  const newUser = name => {
     database.ref(`/users/${name}`).set({
       name: name,
       wins: 0,
       gamesPlayed: 0
     });
+    myUserName = name;
+    myWins = userList[myUserName].wins;
+    myGamesPlayed = userList[myUserName].gamesPlayed;
+  };
   const win = user => {
     myWins++;
     myGamesPlayed++;
+    $("#about-me").text(
+      `My wins: ${myWins}———My Games Played: ${myGamesPlayed}`
+    );
     database.ref(`/users/${user}`).update({
       wins: myWins,
       gamesPlayed: myGamesPlayed
@@ -103,6 +125,9 @@ $(document).ready(function() {
   };
   const loseTie = user => {
     myGamesPlayed++;
+    $("#about-me").text(
+      `My wins: ${myWins}———My Games Played: ${myGamesPlayed}`
+    );
     database.ref(`/users/${user}`).update({
       gamesPlayed: myGamesPlayed
     });
@@ -121,6 +146,7 @@ $(document).ready(function() {
         console.log(playerNum, snap.val().Player2.choice);
         if (playerNum === winner) {
           $("#jumbotron").text("YOU WON!");
+          win(myUserName);
           $("#game").append(
             $("<button>")
               .text("New Game")
@@ -128,7 +154,11 @@ $(document).ready(function() {
           );
         } else if (playerNum === "") {
           $("#jumbotron").text(`${winner.toUpperCase()} HAS WON!`);
+        } else if (winner === "tie") {
+          $("#jumbotron").text("TIE");
+          loseTie(myUserName);
         } else {
+          loseTie(myUserName);
           $("#jumbotron").text("YOU LOST..");
           $("#game").append(
             $("<button>")
@@ -139,17 +169,113 @@ $(document).ready(function() {
       }
     } else {
       $("#new-game").remove();
+      $("#jumbotron").text("NEW GAME");
     }
   });
+  // database.ref("/users").on("value", function(snap) {
+  //   userList = JSON.parse(JSON.stringify(snap));
+  //   console.log("userList", userList);
+  //   console.log("userList.David", userList.David);
+  // });
+  // database.ref("/currentPlayers").on("value", function(snap) {
+  //   if (snap.val()) {
+  //     if (snap.val().Player1 && snap.val().Player2) {
+  //       let player1 = snap.val().Player1;
+  //       console.log("player1: ", player1);
+  //       let player2 = snap.val().Player2;
+  //       console.log("player2: ", player2);
+  //       $("#player-1").text(
+  //         `Player 1: ${player1} | ${userList[player1].wins} Wins | ${
+  //           userList[player1].gamesPlayed
+  //         } Games Played`
+  //       );
+  //       $("#player-2").text(
+  //         `Player 2: ${player2} | ${userList[player2].wins} Wins | ${
+  //           userList[player2].gamesPlayed
+  //         } Games Played`
+  //       );
+  //     }
+  //   }
+  // });
   $(document).on("submit", "#selection", function(event) {
     event.preventDefault();
     database.ref(`/currentGame/${playerNum}`).set({
       choice: $("input[name=rps]:checked").val()
     });
   });
+  // $(document).on("submit", "#login", function(event) {
+  //   event.preventDefault();
+  //   const input = $("#usernameInput")
+  //     .val()
+  //     .trim();
+  //   if (!Object.keys(userList).includes(input)) {
+  //     newUser(input);
+  //   } else {
+  //     myUserName = input;
+  //     myWins = userList[myUserName].wins;
+  //     myGamesPlayed = userList[myUserName].gamesPlayed;
+  //   }
+  //   console.log("My new user: ", myUserName);
+  //   $("#username").empty();
+  //   $("#username").append(
+  //     `${myUserName}`,
+  //     $("<button>")
+  //       .attr("id", "change-user")
+  //       .text("Change User")
+  //   );
+  //   $("#about-me").text(
+  //     `My wins: ${myWins}———My Games Played: ${myGamesPlayed}`
+  //   );
+  //   if (playerNum === "Player1") {
+  //     database.ref("/currentPlayers").update({
+  //       Player1: myUserName
+  //     });
+  //   } else if (playerNum === "Player2") {
+  //     database.ref("/currentPlayers").update({
+  //       Player2: myUserName
+  //     });
+  //   }
+  // });
   $(document).on("click", "#new-game", function() {
     $("#new-game").remove();
-    $("#jumbotron").text("NEW GAME");
     database.ref("/currentGame").remove();
+  });
+  //-------------------------------------------------------------------------
+  //-----------------------------------Chat----------------------------------
+  //-------------------------------------------------------------------------
+  const timestamp = () => {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const year = now.getFullYear();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    return `${month}/${day}/${year} at ${hour}:${minute}`;
+  };
+  database.ref("/chatLog").on("value", function(snap) {
+    $("#chat-log").empty();
+    const log = $("<div>");
+    console.log(snap.val());
+    for (let x = 0; x < Object.keys(snap.val()).length; x++) {
+      log.prepend(
+        $("<div>").text(snap.val()[Object.keys(snap.val())[x]].message)
+      );
+      console.log(snap.val()[Object.keys(snap.val())[x]].message);
+    }
+    $("#chat-log").append(log);
+  });
+  $(document).on("submit", "#my-chat", function(event) {
+    event.preventDefault();
+    if (
+      $("#chat-area")
+        .val()
+        .trim().length > 0
+    ) {
+      database.ref("/chatLog").push({
+        message: `${timestamp()}——${$("#username").text()}——${$("#chat-area")
+          .val()
+          .trim()}`
+      });
+    }
   });
 });

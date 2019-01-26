@@ -22,6 +22,8 @@
         <div>Active users: <span id="users-list"></span></div>
         <div>Current players: <span id="competitors"></span></div>
         <h2 id="jumbotron"></h2>
+        <h3>My user: <span id="username"></span></div>
+        <div id="about-me"></div>
         <div class="game" id="game">
             <form id="selection">
                 <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
@@ -34,14 +36,17 @@
                 <input type="submit" value="Ready">
             </form>
         </div>
-        <!-- <div class="chat">
+        <div id="player-1"></div>
+        <div id="player-2"></div>
+        <div class="chat">
             <h2>Chat</h2>
-            <div id="chat-log"></div>
             <form id="my-chat">
                 <textarea name="Chat" id="chat-area" cols="30" rows="10"></textarea>
                 <input type="submit" value="Send">
             </form>
-        </div> -->
+            <div id="chat-log"></div>
+        </div>
+        <script src="assets/js/firebase.js" async defer></script>
         <script src="assets/js/index.js" async defer></script>
     </body>
 </html>
