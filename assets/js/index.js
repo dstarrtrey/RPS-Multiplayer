@@ -32,10 +32,10 @@ $(document).ready(function() {
   });
   connectionsRef.on("value", function(snap) {
     const connectionArr = Object.keys(JSON.parse(JSON.stringify(snap)));
-    if (connectionArr.length <= 4) {
+    if (connectionArr.length <= 2) {
       players = connectionArr;
-      if (myClientTag === players[2]) playerNum = "Player1";
-      if (myClientTag === players[3]) playerNum = "Player2";
+      if (myClientTag === players[0]) playerNum = "Player1";
+      if (myClientTag === players[1]) playerNum = "Player2";
       $("#game").empty().append(`<form id="selection">
         <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
         <label for="rock">Rock</label>
