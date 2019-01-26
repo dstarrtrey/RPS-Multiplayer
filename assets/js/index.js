@@ -155,6 +155,11 @@ $(document).ready(function() {
         } else if (winner === "tie") {
           $("#jumbotron").text("TIE");
           loseTie(myUserName);
+          $("#game").append(
+            $("<button>")
+              .text("New Game")
+              .attr("id", "new-game")
+          );
         } else {
           loseTie(myUserName);
           $("#jumbotron").text("YOU LOST..");
