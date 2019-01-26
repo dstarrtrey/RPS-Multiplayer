@@ -15,10 +15,8 @@ $(document).ready(function() {
   let userList = {};
   let myClientTag = "";
   let players = [];
-  let player1 = "";
-  let player2 = "";
   let myUserName = "Guest";
-  let playerNum = "";
+  let playerNum = "Guest";
   let myWins = 0;
   let myGamesPlayed = 0;
   // When the client's connection state changes...
