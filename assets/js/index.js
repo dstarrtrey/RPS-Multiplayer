@@ -248,6 +248,11 @@ $(document).ready(function() {
     const year = now.getFullYear();
     const hour = now.getHours();
     const minute = now.getMinutes();
+    [month, day, hour, minute].forEach(element => {
+      if (element < 10) {
+        element = "0" + element;
+      }
+    });
     return `${month}/${day}/${year} at ${hour}:${minute}`;
   };
   database.ref("/chatLog").on("value", function(snap) {
@@ -278,6 +283,7 @@ $(document).ready(function() {
           .val()
           .trim()}`
       });
+      $("#chat-area").val("");
     }
   });
 });
