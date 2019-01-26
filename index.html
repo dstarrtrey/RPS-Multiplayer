@@ -12,37 +12,36 @@
         <link rel="stylesheet" href="assets/css/reset.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-        <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <h1>Rock, Paper, Scissors!</h1>
-        <div id="user-info">
-            <form id="name">
-                <input id="username" type="text" placeholder="Enter username">
-                <input type="submit" value="Submit">
-            </form>
-        </div>
-        <div class="game">
-            <h2 id="opponent-name"></h2>
+        <div>Active users: <span id="users-list"></span></div>
+        <div>Current players: <span id="competitors"></span></div>
+        <h2 id="jumbotron"></h2>
+        <div class="game" id="game">
             <form id="selection">
-                <input type="button" value="Rock" class="RPS-btn">
-                <input type="button" value="Paper" class="RPS-btn">
-                <input type="button" value="Scissors" class="RPS-btn"><br>
+                <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
+                <label for="rock">Rock</label>
+                <input type="radio" name="rps" value="Paper" id="paper" class="RPS-btn">
+                <label for="paper">Paper</label>
+                <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
+                <label for="scissors">Scissors</label><br>
                 <div id="btn-selected"></div>
                 <input type="submit" value="Ready">
             </form>
         </div>
-        <div class="chat">
+        <!-- <div class="chat">
             <h2>Chat</h2>
             <div id="chat-log"></div>
             <form id="my-chat">
                 <textarea name="Chat" id="chat-area" cols="30" rows="10"></textarea>
                 <input type="submit" value="Send">
             </form>
-        </div>
+        </div> -->
         <script src="assets/js/index.js" async defer></script>
     </body>
 </html>
