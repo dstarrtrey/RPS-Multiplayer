@@ -11,6 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="assets/css/reset.css">
         <link rel="stylesheet" href="assets/css/style.css">
+        <script src="https://momentjs.com/downloads/moment.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
     </head>
@@ -21,6 +22,7 @@
         <h1>Rock, Paper, Scissors!</h1>
         <div>Active users: <span id="users-list"></span></div>
         <div>Current players: <span id="competitors"></span></div>
+        <div id="leaderboard"></div>
         <h2 id="jumbotron"></h2>
         <h3>My user: <span id="username"></span></div>
         <form id="display-name"><input id="usernameText" type="text" placeholder="Display Name"><input type="submit"></form>
@@ -34,7 +36,7 @@
                 <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
                 <label for="scissors">Scissors</label><br>
                 <div id="btn-selected"></div>
-                <input type="submit" value="Ready">
+                <!-- <input id="game-submit" type="submit" value="Ready"> -->
             </form>
         </div>
         <div id="player-1"></div>

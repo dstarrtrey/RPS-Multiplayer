@@ -39,8 +39,13 @@ $(document).ready(function() {
     const connectionArr = Object.keys(JSON.parse(JSON.stringify(snap)));
     if (connectionArr.length <= 2) {
       players = connectionArr;
-      if (myClientTag === players[0]) playerNum = "Player1";
-      else if (myClientTag === players[1]) playerNum = "Player2";
+      if (myClientTag === players[0]) {
+        playerNum = "Player1";
+        players[0] = myUserName;
+      } else if (myClientTag === players[1]) {
+        playerNum = "Player2";
+        players[1] = myUserName;
+      }
       $("#username").text(playerNum);
       console.log("my player num: ", playerNum);
       $("#game").empty().append(`<form id="selection">
@@ -51,7 +56,7 @@ $(document).ready(function() {
         <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
         <label for="scissors">Scissors</label><br>
         <div id="btn-selected"></div>
-        <input type="submit" value="Ready">
+        <input id="game-submit" type="submit" value="Ready">
         </form>`);
     } else {
       players = connectionArr.slice(0, 2);
@@ -68,12 +73,12 @@ $(document).ready(function() {
           <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
           <label for="scissors">Scissors</label><br>
           <div id="btn-selected"></div>
-          <input type="submit" value="Ready">
+          <input id="game-submit" type="submit" value="Ready">
           </form>`);
       }
     }
     $("#competitors").text(players);
-    $("#users-list").text(connectionArr);
+    $("#users-list").text(connectionArr.length);
   });
   //------------------------------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------------------------------
@@ -99,16 +104,6 @@ $(document).ready(function() {
       return "input error";
     }
   };
-  $("#username").append(
-    $("<form>")
-      .attr("id", "login")
-      .append(
-        $("<input>")
-          .attr("type", "text")
-          .attr("id", "usernameInput"),
-        $("<input>").attr("type", "submit")
-      )
-  );
   const win = user => {
     myWins++;
     myGamesPlayed++;
@@ -116,6 +111,7 @@ $(document).ready(function() {
       `My wins: ${myWins}———My Games Played: ${myGamesPlayed}`
     );
     database.ref(`/users/${user}`).update({
+      name: user,
       wins: myWins,
       gamesPlayed: myGamesPlayed
     });
@@ -126,6 +122,8 @@ $(document).ready(function() {
       `My wins: ${myWins}———My Games Played: ${myGamesPlayed}`
     );
     database.ref(`/users/${user}`).update({
+      name: user,
+      wins: myWins,
       gamesPlayed: myGamesPlayed
     });
   };
@@ -146,6 +144,7 @@ $(document).ready(function() {
         if (playerNum === winner) {
           $("#jumbotron").text("YOU WON!");
           win(myUserName);
+          $("#game-submit").remove();
           $("#game").append(
             $("<button>")
               .text("New Game")
@@ -153,7 +152,9 @@ $(document).ready(function() {
           );
         } else if (playerNum === "") {
           $("#jumbotron").text(`${winner.toUpperCase()} HAS WON!`);
-        } else if (winner === "tie") {
+        } else if (winner === "tie" && playerNum !== "Guest") {
+          $("#game-submit").remove();
+          console.log(playerNum);
           $("#jumbotron").text("TIE");
           loseTie(myUserName);
           $("#game").append(
@@ -161,7 +162,10 @@ $(document).ready(function() {
               .text("New Game")
               .attr("id", "new-game")
           );
+        } else if (winner === "tie" && playerNum === "Guest") {
+          $("#jumbotron").text("TIE");
         } else {
+          $("#game-submit").remove();
           loseTie(myUserName);
           $("#jumbotron").text("YOU LOST..");
           $("#game").append(
@@ -173,8 +177,15 @@ $(document).ready(function() {
       }
     } else {
       //if there are 0 submitted users (new game)
-      $("#new-game").remove();
       $("#jumbotron").text("NEW GAME");
+      $("#new-game").remove();
+      $("#game-submit").remove();
+      $("#selection").append(
+        $("<input>")
+          .attr("id", "game-submit")
+          .attr("type", "submit")
+          .val("Ready")
+      );
     }
   });
   $(document).on("submit", "#selection", function(event) {
@@ -184,7 +195,6 @@ $(document).ready(function() {
     });
   });
   $(document).on("click", "#new-game", function() {
-    $("#new-game").remove();
     database.ref("/currentGame").remove();
   });
   //------------------------------------------------------------------------------------------------------------------
@@ -202,31 +212,55 @@ $(document).ready(function() {
     myWins = userList[myUserName].wins;
     myGamesPlayed = userList[myUserName].gamesPlayed;
   };
+  database.ref("/currentPlayers").on("value", function(snap) {
+    $("#competitors").text(
+      `${snap.val().Player1} (Player 1), ${snap.val().Player2} (Player 2)`
+    );
+  });
   $(document).on("submit", "#display-name", function(event) {
     event.preventDefault();
     myUserName = $("#usernameText").val();
     $("#username").text(`${myUserName} (${playerNum})`);
     $("#usernameText").val("");
+    if (playerNum === "Player1") {
+      players[0] = myUserName;
+      database.ref("/currentPlayers").update({
+        Player1: myUserName
+      });
+    } else if (playerNum === "Player2") {
+      players[1] = myUserName;
+      database.ref("/currentPlayers").update({
+        Player2: myUserName
+      });
+    }
   });
+  database.ref("/users").on(
+    "value",
+    function(snap) {
+      let leader = { name: "nobody", wins: 0, gamesPlayed: 0 };
+      Object.keys(snap.val()).forEach(user => {
+        if (snap.val()[user].wins > leader.wins) {
+          leader = snap.val()[user];
+        }
+      });
+      $("#leaderboard").text(
+        `Top Player: ${leader.name}—${leader.wins} Wins | ${
+          leader.gamesPlayed
+        } Games Played`
+      );
+      console.log("leader: ", leader);
+      console.log("userSnap: ", snap.val());
+    },
+    function(errorMsg) {
+      console.log("Errors handled: ", errorMsg);
+    }
+  );
   //------------------------------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------------------------------
   //----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat----Chat--
   //------------------------------------------------------------------------------------------------------------------
   //------------------------------------------------------------------------------------------------------------------
-  const timestamp = () => {
-    const now = new Date();
-    const month = now.getMonth() + 1;
-    const day = now.getDate();
-    const year = now.getFullYear();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    [month, day, hour, minute].forEach(element => {
-      if (element < 10) {
-        element = "0" + element;
-      }
-    });
-    return `${month}/${day}/${year} at ${hour}:${minute}`;
-  };
+  const timestamp = () => moment().format("MM/DD [at] hh:mm a");
   database.ref("/chatLog").on("value", function(snap) {
     $("#chat-log").empty();
     const log = $("<div>");
@@ -258,7 +292,7 @@ $(document).ready(function() {
         .trim().length > 0
     ) {
       database.ref("/chatLog").push({
-        message: `${timestamp()}——${$("#username").text()}——${$("#chat-area")
+        message: `${timestamp()}——${$("#username").text()}►${$("#chat-area")
           .val()
           .trim()}`
       });
