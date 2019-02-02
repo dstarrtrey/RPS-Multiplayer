@@ -19,28 +19,32 @@
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <h1>Rock, Paper, Scissors!</h1>
-        <div>Active users: <span id="users-list"></span></div>
-        <div>Current players: <span id="competitors"></span></div>
-        <div id="leaderboard"></div>
-        <h2 id="jumbotron"></h2>
-        <h3>My user: <span id="username"></span></div>
-        <form id="display-name"><input id="usernameText" type="text" placeholder="Display Name"><input type="submit"></form>
-        <div id="about-me"></div>
-        <div class="game" id="game">
-            <form id="selection">
-                <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
-                <label for="rock">Rock</label>
-                <input type="radio" name="rps" value="Paper" id="paper" class="RPS-btn">
-                <label for="paper">Paper</label>
-                <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
-                <label for="scissors">Scissors</label><br>
-                <div id="btn-selected"></div>
-                <!-- <input id="game-submit" type="submit" value="Ready"> -->
-            </form>
+        <div>
+            <h1><span class="r">Rock</span>, <span class="b">Paper</span>, <span class="y">Scissors</span>!</h1>
+            <div class="content">
+                <div>Active users: <span id="users-list"></span></div>
+                <div>Current players: <span id="competitors"></span></div>
+                <div id="leaderboard"></div>
+                <h2 id="jumbotron"></h2>
+                <h3>My Display Name: <span id="username"></span></h3>
+                <form id="display-name"><input id="usernameText" type="text" placeholder="Display Name"><input type="submit"></form>
+                <div id="about-me"></div>
+                <h2>CHOOSE YOUR FATE</h2>
+                <div class="game" id="game">
+                    <form id="selection">
+                        <input type="radio" name="rps" value="Rock" id="rock" class="RPS-btn">
+                        <label for="rock">Rock</label>
+                        <input type="radio" name="rps" value="Paper" id="paper" class="RPS-btn">
+                        <label for="paper">Paper</label>
+                        <input type="radio" name="rps" value="Scissors" id="scissors" class="RPS-btn">
+                        <label for="scissors">Scissors</label><br>
+                        <div id="btn-selected"></div>
+                    </form>
+                </div>
+                <div id="player-1"></div>
+                <div id="player-2"></div>
+            </div>
         </div>
-        <div id="player-1"></div>
-        <div id="player-2"></div>
         <div class="chat">
             <h2>Chat</h2>
             <form id="my-chat">

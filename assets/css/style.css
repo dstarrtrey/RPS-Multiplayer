@@ -1,16 +1,26 @@
 html{
   font-size: 10px;
+  height: 100%;
 }
 body{
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
   text-align: center;
+  background-image: url("../images/rps.png");
+  background-color: #d3d3d3;
 }
 h1{
-  font-size: 5rem;
+  font-size: 7rem;
   margin-top: 0.67rem;
   margin-bottom: 0.67rem;
   margin-left: 0;
   margin-right: 0;
   font-weight: bold;
+  text-shadow: 1px 1px black;
+  color: #008000;
+  text-decoration: underline;
+  text-underline-position: under;
 }
 h2{
   font-size: 4rem;
@@ -41,5 +51,27 @@ div{
 }
 .chat{
   text-align: left;
-  margin-left: 1.5rem;
+  padding-left: 1.5rem;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  overflow: hidden;
+  background-color: white;
+}
+.r{
+  color: red;
+}
+.b{
+  color: blue;
+}
+.y{
+  color: yellow;
+}
+.game{
+  margin: auto auto;
+  background-color: white;
+}
+.content{
+  background-color: white;
+  width: 500px;
+  margin: 50px auto 0 auto;
 }
